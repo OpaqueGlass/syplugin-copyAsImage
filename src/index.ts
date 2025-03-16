@@ -67,22 +67,22 @@ export default class OGCopyPngPlugin extends Plugin {
         }
     }
 
-    openSetting() {
-        // 生成Dialog内容
-        const uid = generateUUID();
-        // 创建dialog
-        const app = createApp(settingVue);
-        const settingDialog = new siyuan.Dialog({
-            "title": this.i18n["setting_panel_title"],
-            "content": `
-            <div id="og_plugintemplate_${uid}" style="overflow: hidden; position: relative;height: 100%;"></div>
-            `,
-            "width": isMobile() ? "92vw":"1040px",
-            "height": isMobile() ? "50vw":"80vh",
-            "destroyCallback": ()=>{app.unmount(); },
-        });
-        app.mount(`#og_plugintemplate_${uid}`);
-    }
+    // openSetting() {
+    //     // 生成Dialog内容
+    //     const uid = generateUUID();
+    //     // 创建dialog
+    //     const app = createApp(settingVue);
+    //     const settingDialog = new siyuan.Dialog({
+    //         "title": this.i18n["setting_panel_title"],
+    //         "content": `
+    //         <div id="og_plugintemplate_${uid}" style="overflow: hidden; position: relative;height: 100%;"></div>
+    //         `,
+    //         "width": isMobile() ? "92vw":"1040px",
+    //         "height": isMobile() ? "50vw":"80vh",
+    //         "destroyCallback": ()=>{app.unmount(); },
+    //     });
+    //     app.mount(`#og_plugintemplate_${uid}`);
+    // }
 }
 
 function isMobile() {

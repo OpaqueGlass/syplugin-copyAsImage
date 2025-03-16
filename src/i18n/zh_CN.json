@@ -8,8 +8,14 @@
     "showDialog": "弹出一个对话框",
     "removedData": "数据已删除",
     "confirmRemove": "确认删除 ${name} 中的数据？",
+    "copy_as_png": "复制为PNG",
+    "copy_as_mathml": "复制为MathML",
+
+    "success:copy": "已复制到剪贴板！",
+    "error:clipboard": "由于浏览器安全策略，插件不能将内容写入剪贴板。如果正在使用网络伺服，请尝试使用https安全连接。",
+
     "name": "思源",
-    "setting_panel_title": "”复制为图片“插件设置",
+    "setting_panel_title": "“复制为图片”插件设置",
     "setting_enableIt_name": "启用插件",
     "setting_fontSize_desp": "单位px",
     "setting_fontSize_name": "字号",

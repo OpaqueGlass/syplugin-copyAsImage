@@ -1,11 +1,18 @@
 import { logPush, warnPush } from "@/logger";
-import html2canvas from "html2canvas";
 import { showMessage } from "siyuan";
 import "@/utils/mathjax";
 import "mathjax/es5/tex-mml-svg";
+import { lang } from "./lang";
 
-
-export function getPngFromSvg(svgElement, callback) {
+/**
+ * SVG to canvas
+ * @param svgElement 
+ * @param callback 
+ * 
+ * Generate From: (Under Apache-2.0 license)
+ * https://github.com/QianJianTech/LaTeXLive/blob/3703d8fa4e1df598b3384c7ef60af3c3d00385ea/js/latex/action.js#L172-L241
+ */
+export function getCanvasFromSVG(svgElement, callback) {
     // Clone the SVG element
     let svgClone = svgElement.cloneNode(true);
 
@@ -80,17 +87,17 @@ export function downloadImageFromCanvas(canvas) {
     // Create a hidden link to download the resulting image
     let hiddenLink = document.createElement("a");
     hiddenLink.href = canvas.toDataURL("image/png");
-    hiddenLink.download = "downloaded_image_" + new Date().getTime() + ".png";
+    hiddenLink.download = "downloaded_image_" + new Date().toLocaleString()+ ".png";
     hiddenLink.click();
 }
 
 export function copyImageToClipboard(canvas) {
     checkClipboard();
     canvas.toBlob(function (blob) {
-        logPush("toBlobing");
+        logPush("writing to clipboard");
         const item = new ClipboardItem({ "image/png": blob });
         navigator.clipboard.write([item]);
-        showMessage("PNG image copied!");
+        showMessage(lang("success:copy"));
     });
 }
 
@@ -98,28 +105,17 @@ export function copyPlainTextToClipboard(text) {
     checkClipboard();
     const item = new ClipboardItem({ "text/plain": new Blob([text], { type: 'text/plain' }) });
     navigator.clipboard.write([item]);
-    showMessage("MathML copied!");
+    showMessage(lang("success:copy"));
 }
 
-function checkClipboard(sendMessage = true) {
+export function checkClipboard(sendMessage = true) {
     if (!navigator.clipboard) {
         if (sendMessage) {
-            showMessage("由于浏览器安全策略，插件不能将内容写入剪贴板。如果正在使用网络伺服，请尝试使用https安全连接。");
+            showMessage(lang("error:clipboard"));
         }
         return false;
     }
     return true;
-}
-
-export function getPNGFromElement(element) {
-    return new Promise((resolve, reject) => {
-        html2canvas(element, { scale: 2 }).then(canvas => {
-            resolve(canvas);
-        }).catch((err) => {
-            reject(err);
-        })
-    })
-
 }
 
 export function convertToMathML(katexString) {
