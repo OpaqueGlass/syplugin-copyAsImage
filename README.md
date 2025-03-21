@@ -2,7 +2,7 @@
 
 [中文](./README_zh_CN.md)
 
-> A [siyuan-note](https://github.com/siyuan-note/siyuan/) plugin that copy formulas, Mermaid, UML, and other types of blocks as PNG images.
+> A [siyuan-note](https://github.com/siyuan-note/siyuan/) plugin that copy formulas, Mermaid, UML, and other types of blocks as PNG images (or download SVG File).
 
 ## ✨Quick Start
 
@@ -12,6 +12,8 @@
 - Copy as PNG: In some block editing areas, click the "Copy as PNG" button;
   - While pressing `Shift`, click this button to download the PNG image; (also in cases where copying is not supported)
 - Copy as MathML: In the formula editing area, click "Copy as MathML"; (can be directly pasted into Word, but not supported in PPT)
+
+> ⭐ If this project helps you, please give it a star! 
 
 ## ❓FAQs
 
