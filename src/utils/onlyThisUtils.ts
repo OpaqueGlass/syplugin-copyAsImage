@@ -4,6 +4,35 @@ import "@/utils/mathjax";
 import "mathjax/es5/tex-mml-svg";
 import { lang } from "./lang";
 
+export function downloadSVG(svgElement) {
+    let hiddenLink = document.createElement("a");
+    let svgHTMLCode = svgElement.outerHTML;
+    let blob = new Blob([svgHTMLCode], {
+        type: "image/svg+xml",
+    });
+    hiddenLink.href = URL.createObjectURL(blob);
+    hiddenLink.download = "export_SVG_" + new Date().toLocaleString() + ".svg";
+    hiddenLink.click();
+}
+
+export async function copySVG(svgElement) {
+    throw Error("Not implemented");
+    copyPlainTextToClipboard(svgElement.outerHTML);
+    let svgHTMLCode = svgElement.outerHTML;
+    const base64code = "data:image/svg+xml;base64," + utf8ToBase64(svgHTMLCode);
+    logPush("writing to clipboard", base64code);
+    const data = await fetch(base64code);
+    const item = new ClipboardItem({ "image/svg+xml": data.blob()});
+    navigator.clipboard.write([item]);
+    showMessage(lang("success:copy"));
+}
+
+function utf8ToBase64(str) {
+    return window.btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+        return String.fromCharCode(parseInt(p1, 16));
+    }));
+}
+
 /**
  * SVG to canvas
  * @param svgElement 
@@ -23,12 +52,6 @@ export function getCanvasFromSVG(svgElement, callback) {
     // Convert the SVG to XML
     let svgXml = svgClone.outerHTML;
     let image = new Image();
-    function utf8ToBase64(str) {
-        return window.btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
-            return String.fromCharCode(parseInt(p1, 16));
-        }));
-    }
-
     image.src = "data:image/svg+xml;base64," + utf8ToBase64(svgXml);
     // image.src = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(svgXml)));
     logPush("copying");

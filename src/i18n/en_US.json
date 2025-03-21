@@ -9,8 +9,11 @@
     "removedData": "Data deleted",
     "confirmRemove": "Confirm to delete the data in ${name}?",
     "name": "SiYuan",
-    "copy_as_png": "Copy as PNG",
+    "copy_as_png": "Copy as PNG.  Shift+Click to download PNG",
     "copy_as_mathml": "Copy as MathML",
+    "download_svg": "Download SVG",
+    "error:svg": "An error occured when converting svg",
+    "error:download_uml": "An error occured while loading PlantUML",
 
     "success:copy": "Copied to clipboard!",
     "error:clipboard": "Due to browser security policies, the plugin cannot write content to the clipboard. If you are using a web server, try using a secure connection with https."

@@ -1,7 +1,7 @@
 import { IEventBusMap } from "siyuan";
 import { BaseCopyProcessor } from "./baseProcessor";
 import { logPush } from "@/logger";
-import { checkClipboard, copyImageToClipboard, downloadImageFromCanvas, getCanvasFromSVG } from "@/utils/onlyThisUtils";
+import { checkClipboard, copyImageToClipboard, downloadImageFromCanvas, downloadSVG, getCanvasFromSVG } from "@/utils/onlyThisUtils";
 
 export class MermaidCopyProcessor extends BaseCopyProcessor {
     public async doAddButton(eventDetail: IEventBusMap["open-noneditableblock"]): Promise<boolean> {
@@ -10,7 +10,7 @@ export class MermaidCopyProcessor extends BaseCopyProcessor {
         copyPngBtn.onclick = (event)=>{
             logPush("Clicked", renderElement.querySelector(`.protyle-icons + div svg`));
             getCanvasFromSVG(renderElement.querySelector(`.protyle-icons + div svg`), (canvas)=>{
-                if (event.shiftKey || !checkClipboard()) {
+                if (event.shiftKey || !checkClipboard(true)) {
                     downloadImageFromCanvas(canvas);
                 } else {
                     copyImageToClipboard(canvas);
@@ -18,8 +18,12 @@ export class MermaidCopyProcessor extends BaseCopyProcessor {
             });
             // downloadPNG(event.detail.renderElement.querySelector(`.protyle-icons + div svg`))
         };
+        const copySVGBtn = this.createButton("og-copy-svg", "download_svg", "ogiconImageDown");
+        copySVGBtn.onclick = (event) => {
+            downloadSVG(renderElement.querySelector(`.protyle-icons + div svg`));
+        }
         this.addButtonAfter(eventDetail.toolbar.subElement.querySelector("[data-type='export']"),
-                            [copyPngBtn]);
+                            [copyPngBtn, copySVGBtn]);
         return true;
     }
     /**

@@ -2,7 +2,7 @@ import { IEventBusMap } from "siyuan";
 import { BaseCopyProcessor } from "./baseProcessor";
 import { logPush } from "@/logger";
 import { htmlTransferParser } from "@/utils/stringUtils";
-import { checkClipboard, convertToMathML, copyImageToClipboard, copyPlainTextToClipboard, downloadImageFromCanvas, getCanvasFromSVG, mathmlToSvg } from "@/utils/onlyThisUtils";
+import { checkClipboard, convertToMathML, copyImageToClipboard, copyPlainTextToClipboard, copySVG, downloadImageFromCanvas, downloadSVG, getCanvasFromSVG, mathmlToSvg } from "@/utils/onlyThisUtils";
 
 export class MathCopyProcessor extends BaseCopyProcessor {
     public async doAddButton(eventDetail: IEventBusMap["open-noneditableblock"]): Promise<boolean> {
@@ -15,7 +15,7 @@ export class MathCopyProcessor extends BaseCopyProcessor {
             const svgE = await mathmlToSvg(mathml);
             logPush("svgE", svgE);
             getCanvasFromSVG(svgE, (canvas) => {
-                if (event.shiftKey || !checkClipboard) {
+                if (event.shiftKey || !checkClipboard(true)) {
                     downloadImageFromCanvas(canvas)
                 } else {
                     copyImageToClipboard(canvas);
@@ -29,8 +29,21 @@ export class MathCopyProcessor extends BaseCopyProcessor {
             logPush("mathml", mathml);
             copyPlainTextToClipboard(mathml);
         };
+        const copySVGBtn = this.createButton("og-copy-svg", "download_svg", "ogiconImageDown");
+        copySVGBtn.onclick = async (event) => {
+            logPush("公式content", htmlTransferParser(renderElement.dataset["content"]));
+            const mathml = convertToMathML(htmlTransferParser(renderElement.dataset["content"]));
+            logPush("mathml", mathml);
+            const svgE = await mathmlToSvg(mathml);
+            downloadSVG(svgE);
+            // if (event.shiftKey || !checkClipboard()) {
+            //     downloadSVG(svgE);
+            // } else {
+            //     copySVG(svgE);
+            // }
+        }
         this.addButtonAfter(eventDetail.toolbar.subElement.querySelector("[data-type='export']"),
-                            [copyPngBtn, copyMathMLBtn]);
+                            [copyPngBtn, copyMathMLBtn, copySVGBtn]);
         return true;
     }
     /**

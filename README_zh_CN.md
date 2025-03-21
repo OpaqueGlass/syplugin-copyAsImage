@@ -4,6 +4,8 @@
 
 > 将公式、Mermaid、UML等部分类型的块复制为PNG图片的[思源笔记](https://github.com/siyuan-note/siyuan/)插件。
 
+> 当前版本 v0.2.0 新增：下载svg图片；
+
 ## ✨快速开始
 
 - 从集市下载 或 1、解压Release中的`package.zip`，2、将文件夹移动到`工作空间/data/plugins/`，3、并将文件夹重命名为`syplugin-copyAsImage`;

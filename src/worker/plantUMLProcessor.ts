@@ -1,7 +1,7 @@
-import { IEventBusMap } from "siyuan";
+import { IEventBusMap, showMessage } from "siyuan";
 import { BaseCopyProcessor } from "./baseProcessor";
 import { errorPush, logPush } from "@/logger";
-import { checkClipboard, copyImageToClipboard, downloadImageFromCanvas, getCanvasFromSVG } from "@/utils/onlyThisUtils";
+import { checkClipboard, copyImageToClipboard, downloadImageFromCanvas, downloadSVG, getCanvasFromSVG } from "@/utils/onlyThisUtils";
 
 export class PlantUMLProcessor extends BaseCopyProcessor {
     public test(eventDetail: IEventBusMap["open-noneditableblock"]): boolean {
@@ -14,11 +14,24 @@ export class PlantUMLProcessor extends BaseCopyProcessor {
         btnElem.addEventListener("click", (event)=>{
             this.copyItem(eventDetail, event.shiftKey || !checkClipboard(true));
         });
+        const copySVGBtn = this.createButton("og-copy-svg", "download_svg", "ogiconImageDown");
+        copySVGBtn.onclick = ()=>{
+            this.getSVG(eventDetail).then((result)=>{
+                if (result) {
+                    downloadSVG(result);
+                } else {
+                    showMessage("error:svg");
+                }
+            }).catch((err)=>{
+                showMessage("error:download_uml");
+                errorPush(err);
+            });
+        };
         this.addButtonAfter(eventDetail.toolbar.subElement.querySelector("[data-type='export']"),
-        [btnElem]);
+        [btnElem, copySVGBtn]);
     }
 
-    public async copyItem(eventDetail: IEventBusMap["open-noneditableblock"], download: boolean): Promise<boolean> {
+    private async getSVG(eventDetail: IEventBusMap["open-noneditableblock"]): Promise<HTMLElement> {
         const renderElement = eventDetail.renderElement;
         const objectE = renderElement.querySelector(".protyle-icons + div object");
         const dataUrl = objectE.getAttribute("data");
@@ -32,10 +45,18 @@ export class PlantUMLProcessor extends BaseCopyProcessor {
             documentNode = documentNode.querySelector("svg");
         } catch (error) {
             errorPush('无法访问URL内容:', error);
-            return false;
+            return null;
         }
         documentNode.removeAttribute("preserveAspectRatio");
         logPush("svg", documentNode);
+        return documentNode as HTMLElement;
+    }
+
+    public async copyItem(eventDetail: IEventBusMap["open-noneditableblock"], download: boolean): Promise<boolean> {
+        const documentNode = await this.getSVG(eventDetail);
+        if (documentNode == null) {
+            return false;
+        }
         getCanvasFromSVG(documentNode, (canvas)=>{
             if (download) {
                 downloadImageFromCanvas(canvas);
