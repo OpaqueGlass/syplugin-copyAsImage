@@ -1,4 +1,4 @@
-import { logPush, warnPush } from "@/logger";
+import { debugPush, logPush, warnPush } from "@/logger";
 import { showMessage } from "siyuan";
 import "@/utils/mathjax";
 import "mathjax/es5/tex-mml-svg";
@@ -6,13 +6,17 @@ import { lang } from "./lang";
 
 export function downloadSVG(svgElement) {
     let hiddenLink = document.createElement("a");
-    let svgHTMLCode = svgElement.outerHTML;
+    let svgHTMLCode = filterSVGouterHTML(svgElement.outerHTML);
     let blob = new Blob([svgHTMLCode], {
         type: "image/svg+xml",
     });
     hiddenLink.href = URL.createObjectURL(blob);
     hiddenLink.download = "export_SVG_" + new Date().toLocaleString() + ".svg";
     hiddenLink.click();
+}
+
+export function filterSVGouterHTML(str) {
+    return str.replaceAll("<br>", "<br />");
 }
 
 export async function copySVG(svgElement) {
@@ -50,11 +54,14 @@ export function getCanvasFromSVG(svgElement, callback) {
     svgClone.setAttribute("height", "1080px");
 
     // Convert the SVG to XML
-    let svgXml = svgClone.outerHTML;
+    let svgXml = filterSVGouterHTML(svgClone.outerHTML);
     let image = new Image();
     image.src = "data:image/svg+xml;base64," + utf8ToBase64(svgXml);
     // image.src = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(svgXml)));
     logPush("copying");
+    image.onerror = function(e) {
+        logPush("SVG image failed to load", e);
+    };
     image.onload = function () {
         // Create a canvas and draw the image onto it
         logPush("loading");
