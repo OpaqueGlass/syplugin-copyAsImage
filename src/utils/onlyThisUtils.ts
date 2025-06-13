@@ -6,7 +6,7 @@ import { lang } from "./lang";
 
 export function downloadSVG(svgElement) {
     let hiddenLink = document.createElement("a");
-    let svgHTMLCode = filterSVGouterHTML(svgElement.outerHTML);
+    let svgHTMLCode = serializeSVG(svgElement) //filterSVGouterHTML(svgElement.outerHTML);
     let blob = new Blob([svgHTMLCode], {
         type: "image/svg+xml",
     });
@@ -17,6 +17,12 @@ export function downloadSVG(svgElement) {
 
 export function filterSVGouterHTML(str) {
     return str.replaceAll("<br>", "<br />");
+}
+
+export function serializeSVG(svgElement) {
+    let serializer = new XMLSerializer();
+    let svgXml = serializer.serializeToString(svgElement);
+    return svgXml;
 }
 
 export async function copySVG(svgElement) {
@@ -54,7 +60,7 @@ export function getCanvasFromSVG(svgElement, callback) {
     svgClone.setAttribute("height", "1080px");
 
     // Convert the SVG to XML
-    let svgXml = filterSVGouterHTML(svgClone.outerHTML);
+    let svgXml = serializeSVG(svgElement) //filterSVGouterHTML(svgClone.outerHTML);
     let image = new Image();
     image.src = "data:image/svg+xml;base64," + utf8ToBase64(svgXml);
     // image.src = "data:image/svg+xml;base64," + window.btoa(unescape(encodeURIComponent(svgXml)));
