@@ -8,7 +8,7 @@
 
 - Download from the marketplace or 1. unzip `package.zip` from Releases, 2. move the folder to `workspace/data/plugins/`, 3. rename the folder to `syplugin-copyAsImage`;
 - Enable the plugin;
-- Click on a formula, Mermaid block, etc., and you can see the function button added by the plugin at the top right corner of the edit area;
+- Click the edit button of blocks such as formulas and Mermaid, and you can see the function buttons added by the plugin in the **top-right corner of the edit area**;
 - Copy as PNG: In some block editing areas, click the "Copy as PNG" button;
   - While pressing `Shift`, click this button to download the PNG image; (also in cases where copying is not supported)
 - Copy as MathML: In the formula editing area, click "Copy as MathML"; (can be directly pasted into Word, but not supported in PPT)
