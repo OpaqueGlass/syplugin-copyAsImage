@@ -17,6 +17,7 @@ export function commonPushCheck() {
     if (window.top["OpaqueGlassDebugV2"] == undefined || window.top["OpaqueGlassDebugV2"][g_NAME] == undefined) {
         return g_DEBUG;
     }
+    console.log("indow.top[", window.top["OpaqueGlassDebugV2"][g_NAME])
     return window.top["OpaqueGlassDebugV2"][g_NAME];
 }
 

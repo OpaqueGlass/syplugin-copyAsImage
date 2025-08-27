@@ -22,6 +22,7 @@ console.log("isWatch=>", isWatch)
 console.log("distDir=>", distDir)
 
 export default defineConfig({
+    base: "/plugins/syplugin-copyAsImage",
     resolve: {
         alias: {
             "@": resolve(__dirname, "src"),

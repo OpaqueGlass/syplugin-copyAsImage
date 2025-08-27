@@ -18,6 +18,8 @@
     "error:svg": "转换svg时出现错误",
     "error:download_uml": "获取UML时出现错误",
 
+    "info:render_node": "部分渲染节点（例如：Mermaid，公式）可在公式编辑区点击复制为图片，导出更清晰",
+
     "name": "复制为图片",
     "setting_panel_title": "“复制为图片”插件设置",
     "setting_enableIt_name": "启用插件",

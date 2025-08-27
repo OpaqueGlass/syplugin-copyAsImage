@@ -15,6 +15,7 @@
     "download_svg": "Download SVG",
     "error:svg": "An error occured when converting svg",
     "error:download_uml": "An error occured while loading PlantUML",
+    "info:render_node": "Some rendering nodes (e.g., Mermaid, formulas) can be copied as images by clicking in the formula editing area for clearer export.",
 
     "success:copy": "Copied to clipboard!",
     "error:clipboard": "Due to browser security policies, the plugin cannot write content to the clipboard. If you are using a web server, try using a secure connection with https."

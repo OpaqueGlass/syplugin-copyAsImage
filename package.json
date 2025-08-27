@@ -33,6 +33,7 @@
   "dependencies": {
     "@vitejs/plugin-vue": "^4.5.0",
     "@vue/tsconfig": "^0.4.0",
+    "html-to-image": "^1.11.13",
     "mathjax": "^3.2.2",
     "natsort": "^2.0.3",
     "sortablejs": "^1.15.2",

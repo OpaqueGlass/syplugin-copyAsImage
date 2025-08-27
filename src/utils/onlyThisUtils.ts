@@ -80,11 +80,12 @@ export async function downloadImageBase64URL(dataUrl:string) {
  * SVG to canvas
  * @param svgElement 
  * @param callback 
+ * @param remvoeBG 
  * 
- * Generate From: (Under Apache-2.0 license)
+ * Generate/Modify From: (Under Apache-2.0 license)
  * https://github.com/QianJianTech/LaTeXLive/blob/3703d8fa4e1df598b3384c7ef60af3c3d00385ea/js/latex/action.js#L172-L241
  */
-export function getCanvasFromSVG(svgElement, callback, changeSize = true) {
+export function getCanvasFromSVG(svgElement, callback, removeBG=false) {
     // Clone the SVG element
     let svgClone = svgElement.cloneNode(true);
 
@@ -94,14 +95,12 @@ export function getCanvasFromSVG(svgElement, callback, changeSize = true) {
     let origHeight = viewBox && viewBox.height ? viewBox.height : svgElement.clientHeight || 600;
     let aspectRatio = origWidth / origHeight;
 
-    // 如果需要，设置目标渲染尺寸（保持比例）
+    // 设置目标渲染尺寸（保持比例）
     let targetWidth = 1920;
     let targetHeight = Math.round(targetWidth / aspectRatio);
 
-    if (changeSize) {
-        svgClone.setAttribute("width", targetWidth + "px");
-        svgClone.setAttribute("height", targetHeight + "px");
-    }
+    svgClone.setAttribute("width", targetWidth + "px");
+    svgClone.setAttribute("height", targetHeight + "px");
 
     // Convert the SVG to XML
     let svgXml = serializeSVG(svgClone);
@@ -121,57 +120,42 @@ export function getCanvasFromSVG(svgElement, callback, changeSize = true) {
 
         let context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-        // === 第二步：检测非透明区域
-        let imgData = context.getImageData(0, 0, canvas.width, canvas.height).data;
-        let lOffset = canvas.width,
-            rOffset = 0,
-            tOffset = canvas.height,
-            bOffset = 0;
-
-        for (let i = 0; i < canvas.width; i++) {
-            for (let j = 0; j < canvas.height; j++) {
-                let pos = (i + canvas.width * j) * 4;
-                if (
-                    imgData[pos] > 0 ||
-                    imgData[pos + 1] > 0 ||
-                    imgData[pos + 2] > 0 ||
-                    imgData[pos + 3] > 0
-                ) {
-                    bOffset = Math.max(j, bOffset);
-                    rOffset = Math.max(i, rOffset);
-                    tOffset = Math.min(j, tOffset);
-                    lOffset = Math.min(i, lOffset);
-                }
-            }
+        if (!removeBG) {
+            callback(canvas, context);
+            return;
         }
+        // === 第二步：检测非透明区域（提交到工作线程）
+        let imgData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        const worker = new Worker(new URL('./imageProcessorWorker.js', import.meta.url));
+        worker.onmessage = (event) => {
+            const { lOffset, rOffset, tOffset, bOffset } = event.data;
+            // === 第三步：裁剪并输出（保持比例）
+            let cropWidth = rOffset - lOffset;
+            let cropHeight = bOffset - tOffset;
 
-        // === 第三步：裁剪并输出（保持比例）
-        let cropWidth = rOffset - lOffset;
-        let cropHeight = bOffset - tOffset;
+            let canvas2 = document.createElement("canvas");
+            canvas2.width = cropWidth;
+            canvas2.height = cropHeight;
+            let context2 = canvas2.getContext("2d");
 
-        let canvas2 = document.createElement("canvas");
-        canvas2.width = cropWidth;
-        canvas2.height = cropHeight;
-        let context2 = canvas2.getContext("2d");
+            // 裁剪部分原样绘制（不再强行拉伸）
+            context2.drawImage(
+                canvas,
+                lOffset,
+                tOffset,
+                cropWidth,
+                cropHeight,
+                0,
+                0,
+                cropWidth,
+                cropHeight
+            );
 
-        // 裁剪部分原样绘制（不再强行拉伸）
-        context2.drawImage(
-            canvas,
-            lOffset,
-            tOffset,
-            cropWidth,
-            cropHeight,
-            0,
-            0,
-            cropWidth,
-            cropHeight
-        );
-
-        callback(canvas2, context2);
+            callback(canvas2, context2);
+        };
+        worker.postMessage({ imgData, width: canvas.width, height: canvas.height });
     };
 }
-
 
 export function downloadImageFromCanvas(canvas) {
     // Create a hidden link to download the resulting image

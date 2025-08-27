@@ -11,6 +11,7 @@ import { MathCopyProcessor } from "@/worker/mathProcessor";
 import { toPng, toSvg } from "html-to-image";
 import { copyImageBase64URLToClipboard, copyImageToClipboard, downloadImageBase64URL, getCanvasFromSVG, handleSVGStringToSVGElement } from "@/utils/onlyThisUtils";
 import { lang } from "@/utils/lang";
+import { showPluginMessage } from "@/utils/common";
 export default class EventHandler {
     private handlerBindList: Record<string, (arg1: CustomEvent)=>void> = {
         "open-noneditableblock": this.bindActionEntry.bind(this), // mutex需要访问EventHandler的属性
@@ -72,6 +73,9 @@ export default class EventHandler {
             "click": (element, event)=>{
                 logPush("clicked", element);
                 const targetElement = htmlElements[0];
+                if (targetElement.classList.contains("render-node")) {
+                    showPluginMessage(lang("info:render_node"));
+                }
                 targetElement.classList.remove("protyle-wysiwyg--select");
                 // toPng(htmlElements[0]).then((result)=>{
                 //     logPush("clicked", result);
@@ -79,6 +83,7 @@ export default class EventHandler {
                 //     copyImageBase64URLToClipboard(result);
                 // });
                 // 
+                logPush("svgs", htmlElements);
                 toSvg(htmlElements[0]).then((result)=>{
                     const svg = handleSVGStringToSVGElement(result);
                     const foreignObject = svg.querySelector('foreignObject');
@@ -92,7 +97,7 @@ export default class EventHandler {
                     logPush("clicked", svg);
                     getCanvasFromSVG(svg, (canvas)=>{
                         copyImageToClipboard(canvas);
-                    }, true);
+                    }, false);
                 })
             }
         });
