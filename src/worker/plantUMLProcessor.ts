@@ -2,6 +2,7 @@ import { IEventBusMap, showMessage } from "siyuan";
 import { BaseCopyProcessor } from "./baseProcessor";
 import { errorPush, logPush } from "@/logger";
 import { checkClipboard, copyImageToClipboard, downloadImageFromCanvas, downloadSVG, getCanvasFromSVG } from "@/utils/onlyThisUtils";
+import { showPluginMessage } from "@/utils/common";
 
 export class PlantUMLProcessor extends BaseCopyProcessor {
     public test(eventDetail: IEventBusMap["open-noneditableblock"]): boolean {
@@ -20,10 +21,10 @@ export class PlantUMLProcessor extends BaseCopyProcessor {
                 if (result) {
                     downloadSVG(result);
                 } else {
-                    showMessage("error:svg");
+                    showPluginMessage("error:svg");
                 }
             }).catch((err)=>{
-                showMessage("error:download_uml");
+                showPluginMessage("error:download_uml");
                 errorPush(err);
             });
         };

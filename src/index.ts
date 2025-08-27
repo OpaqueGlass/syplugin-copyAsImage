@@ -48,7 +48,7 @@ export default class OGCopyPngPlugin extends Plugin {
             this.myEventHandler.bindHandler();
             setStyle();
         }).catch((e)=>{
-            showMessage("文档层级导航插件载入设置项失败。Load plugin settings faild. syplugin-hierarchy-navigate");
+            showMessage("复制为图片载入设置项失败。Load plugin settings faild. syplugin-copyAsImg");
             errorPush(e);
         });
     }
@@ -67,6 +67,7 @@ export default class OGCopyPngPlugin extends Plugin {
             delete window["og_hn_observe"];
         }
     }
+
 
     // openSetting() {
     //     // 生成Dialog内容

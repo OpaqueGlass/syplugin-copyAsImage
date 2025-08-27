@@ -9,6 +9,7 @@
     "removedData": "数据已删除",
     "confirmRemove": "确认删除 ${name} 中的数据？",
     "copy_as_png": "复制为PNG（Shift+点击：下载PNG）",
+    "copy_as_png_only": "复制为PNG",
     "copy_as_mathml": "复制为MathML",
     "download_svg": "下载svg",
 
@@ -17,7 +18,7 @@
     "error:svg": "转换svg时出现错误",
     "error:download_uml": "获取UML时出现错误",
 
-    "name": "思源",
+    "name": "复制为图片",
     "setting_panel_title": "“复制为图片”插件设置",
     "setting_enableIt_name": "启用插件",
     "setting_fontSize_desp": "单位px",

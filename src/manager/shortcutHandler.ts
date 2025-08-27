@@ -1,4 +1,4 @@
-import { showMessage, Plugin } from "siyuan";
+import { Plugin } from "siyuan";
 
 
 export function bindCommand(pluginInstance: Plugin) {
